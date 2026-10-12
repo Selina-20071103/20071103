@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>★ Y2K Cyber Meme Generator 2000 ★</title>
+  
+  <!-- 1. 引入 Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 2. 引入 Google Fonts (Y2K 復古風格字體：Bungee, Press Start 2P, VT323, Noto Sans TC) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Press+Start+2P&family=VT323&family=Noto+Sans+TC:wght@700;900&display=swap" rel="stylesheet">
+  
+  <!-- 3. 引入 html2canvas CDN (用於將 DOM 轉為圖片下載) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    /* 全局字體與 Y2K 復古樣式設定 */
+    body {
+      font-family: 'VT323', 'Noto Sans TC', monospace;
+      background-color: #0d001a;
+      /* 點陣圖格與線條構成的復古賽博背景 */
+      background-image: 
+        radial-gradient(#ff007f 1px, transparent 0),
+        linear-gradient(to right, rgba(0, 255, 204, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 0, 204, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px, 40px 40px, 40px 40px;
+      color: #00ffcc;
+    }
+
+    /* 標題字體使用 Bungee / Press Start 2P */
+    .font-y2k-title {
+      font-family: 'Press Start 2P', cursive;
+    }
+
+    .font-impact {
+      font-family: 'Bungee', 'Noto Sans TC', sans-serif;
+    }
+
+    /* Y2K 復古視窗外框樣式 (Win98/2000 霓虹進化版) */
+    .y2k-window {
+      background: #120024;
+      border: 3px solid #ff007f;
+      box-shadow: 6px 6px 0px #00ffcc, -3px -3px 0px #ff007f, inset 0 0 15px rgba(255, 0, 204, 0.3);
+      border-radius: 8px;
+    }
+
+    /* 視窗標題列 */
+    .y2k-title-bar {
+      background: linear-gradient(90deg, #ff007f, #7928ca, #00ffcc);
+      color: #ffffff;
+      text-shadow: 2px 2px 0px #000;
+      font-family: 'Press Start 2P', cursive;
+    }
+
+    /* Y2K 控制元件/按鈕經典樣式 */
+    .y2k-button {
+      background: linear-gradient(180deg, #ff007f 0%, #b30059 100%);
+      border: 2px solid #00ffcc;
+      color: #ffffff;
+      text-shadow: 1px 1px 0px #000;
+      box-shadow: 3px 3px 0px #00ffcc;
+      transition: all 0.1s ease;
+      font-family: 'VT323', monospace;
+    }
+
+    .y2k-button:hover {
+      background: linear-gradient(180deg, #00ffcc 0%, #009977 100%);
+      color: #000;
+      box-shadow: 3px 3px 0px #ff007f;
+      cursor: pointer;
+    }
+
+    .y2k-button:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #ff007f;
+    }
+
+    /* 滑桿 (Input Range) Custom Styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: #240046;
+      border: 1px solid #00ffcc;
+      height: 10px;
+      border-radius: 5px;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 22px;
+      width: 14px;
+      border-radius: 2px;
+      background: #ff007f;
+      border: 2px solid #00ffcc;
+      cursor: pointer;
+      box-shadow: 1px 1px 0px #000;
+    }
+
+    /* 輸入框美化 */
+    .y2k-input {
+      background: #000000;
+      border: 2px solid #00ffcc;
+      color: #00ffcc;
+      box-shadow: inset 2px 2px 5px rgba(255, 0, 128, 0.5);
+      font-family: 'VT323', sans-serif;
+    }
+
+    .y2k-input:focus {
+      outline: none;
+      border-color: #ff007f;
+      box-shadow: inset 2px 2px 5px rgba(0, 255, 204, 0.8), 0 0 10px #ff007f;
+    }
+
+    /* 迷因文字描邊 (確保文字在任何底圖上都清晰可見) */
+    .meme-text-stroke {
+      color: white;
+      text-shadow:
+        3px 3px 0 #000,
+       -3px 3px 0 #000,
+        3px -3px 0 #000,
+       -3px -3px 0 #000,
+        0px 3px 0 #000,
+        0px -3px 0 #000,
+        3px 0px 0 #000,
+       -3px 0px 0 #000,
+        2px 2px 5px rgba(0,0,0,0.8);
+      word-break: break-word;
+      line-height: 1.1;
+    }
+
+    /* Y2K 霓虹閃爍效果 */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .neon-blink {
+      animation: blink 1.5s infinite;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between p-3 md:p-6">
+
+  <!-- 頁頭 Banner 區域 -->
+  <header class="w-full max-w-6xl mx-auto mb-6">
+    <div class="y2k-window p-1">
+      <div class="y2k-title-bar px-3 py-1 flex justify-between items-center text-xs md:text-sm">
+        <span>C:\MEME_MAKER\2000\CYBER_MEME.EXE</span>
+        <div class="flex space-x-1">
+          <span class="px-1.5 py-0.5 bg-gray-800 border border-white text-white text-xs cursor-pointer">_</span>
+          <span class="px-1.5 py-0.5 bg-gray-800 border border-white text-white text-xs cursor-pointer">X</span>
+        </div>
+      </div>
+      <div class="p-4 text-center">
+        <h1 class="font-y2k-title text-xl md:text-3xl text-pink-500 tracking-wider mb-1 drop-shadow-[2px_2px_0_#00ffcc]">
+          ★ Y2K MEME GENERATOR ★
+        </h1>
+        <p class="text-lg md:text-xl text-cyan-300 neon-blink">
+          &lt;&lt; 打造專屬於你的千禧復古迷因圖 &gt;&gt;
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主要內容區：響應式雙欄排版 (手機上下堆疊 / 電腦左右橫排) -->
+  <main class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow">
+
+    <!-- 左側：控制面板區 (5 欄) -->
+    <section class="lg:col-span-5 flex flex-col space-y-5">
+      <div class="y2k-window p-4 flex-grow flex flex-col justify-between">
+        
+        <div>
+          <div class="y2k-title-bar px-2 py-1 mb-4 text-xs">
+            [ CONTROL_PANEL ] - 控制面板
+          </div>
+
+          <!-- 1. 圖片來源區 (本地上傳 & 範例切換) -->
+          <div class="mb-5 border-b-2 border-dashed border-pink-500 pb-4">
+            <label class="block text-xl font-bold mb-2 text-pink-400">
+              📁 1. 選擇底圖 (底圖上傳)
+            </label>
+            
+            <!-- 上傳本地檔案 (FileReader 避開 CORS 錯誤) -->
+            <input 
+              type="file" 
+              id="image-upload" 
+              accept="image/*" 
+              class="hidden"
+            >
+            <button 
+              onclick="document.getElementById('image-upload').click()"
+              class="y2k-button w-full py-2.5 px-4 text-xl tracking-wider mb-3 flex items-center justify-center space-x-2"
+            >
+              <span>📂 上傳電腦中的圖片</span>
+            </button>
+
+            <!-- 預設範例迷因圖選擇 -->
+            <div class="mt-2">
+              <span class="text-sm text-cyan-300 block mb-1">或選擇經典範例圖片：</span>
+              <div class="grid grid-cols-3 gap-2">
+                <button onclick="loadPresetImage('doge')" class="y2k-button text-xs py-1">🐕 柴犬迷因</button>
+                <button onclick="loadPresetImage('cat')" class="y2k-button text-xs py-1">🐱 驚訝貓貓</button>
+                <button onclick="loadPresetImage('retro')" class="y2k-button text-xs py-1">💻 復古電繪</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. 文字輸入區 -->
+          <div class="mb-5 border-b-2 border-dashed border-pink-500 pb-4 space-y-3">
+            <label class="block text-xl font-bold text-pink-400">
+              ✍️ 2. 輸入迷因文字
+            </label>
+            
+            <div>
+              <span class="text-sm text-cyan-300">上方文字 (Top Text)：</span>
+              <input 
+                type="text" 
+                id="top-text-input" 
+                placeholder="當你在 2000 年打開網頁..." 
+                value="WHEN YOU OPEN WEBSITE IN 2000"
+                class="y2k-input w-full p-2 text-lg rounded"
+              >
+            </div>
+
+            <div>
+              <span class="text-sm text-cyan-300">下方文字 (Bottom Text)：</span>
+              <input 
+                type="text" 
+                id="bottom-text-input" 
+                placeholder="發現網路連線成功時..." 
+                value="CYBERSPACE IS READY!"
+                class="y2k-input w-full p-2 text-lg rounded"
+              >
+            </div>
+          </div>
+
+          <!-- 3. 參數滑桿微調區 -->
+          <div class="space-y-4">
+            <label class="block text-xl font-bold text-pink-400">
+              🎛️ 3. 樣式與位置控制
+            </label>
+
+            <!-- 文字顏色選擇 -->
+            <div class="flex items-center justify-between">
+              <span class="text-md text-cyan-300">文字色彩：</span>
+              <div class="flex space-x-2">
+                <button onclick="changeTextColor('#FFFFFF')" class="w-6 h-6 rounded border border-white bg-white hover:scale-110"></button>
+                <button onclick="changeTextColor('#FFFF00')" class="w-6 h-6 rounded border border-white bg-yellow-300 hover:scale-110"></button>
+                <button onclick="changeTextColor('#00FFCC')" class="w-6 h-6 rounded border border-white bg-cyan-400 hover:scale-110"></button>
+                <button onclick="changeTextColor('#FF007F')" class="w-6 h-6 rounded border border-white bg-pink-500 hover:scale-110"></button>
+                <input type="color" id="text-color-picker" value="#ffffff" class="w-6 h-6 bg-transparent cursor-pointer">
+              </div>
+            </div>
+
+            <!-- 字體大小滑桿 -->
+            <div>
+              <div class="flex justify-between text-sm text-cyan-300 mb-1">
+                <span>字體大小 (Font Size):</span>
+                <span id="font-size-val">36px</span>
+              </div>
+              <input type="range" id="font-size-slider" min="16" max="72" value="36" class="w-full">
+            </div>
+
+            <!-- 上方文字位置滑桿 -->
+            <div>
+              <div class="flex justify-between text-sm text-cyan-300 mb-1">
+                <span>上方文字垂直位置 (Top Pos):</span>
+                <span id="top-pos-val">5%</span>
+              </div>
+              <input type="range" id="top-pos-slider" min="0" max="40" value="5" class="w-full">
+            </div>
+
+            <!-- 下方文字位置滑桿 -->
+            <div>
+              <div class="flex justify-between text-sm text-cyan-300 mb-1">
+                <span>下方文字垂直位置 (Bottom Pos):</span>
+                <span id="bottom-pos-val">5%</span>
+              </div>
+              <input type="range" id="bottom-pos-slider" min="0" max="40" value="5" class="w-full">
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. 一鍵下載按鈕 -->
+        <div class="mt-6 pt-4 border-t-2 border-pink-500">
+          <button 
+            id="download-btn" 
+            class="y2k-button w-full py-3 text-2xl font-bold tracking-wider rounded flex items-center justify-center space-x-2 animate-bounce"
+          >
+            <span>💾 一鍵下載迷因 (SAVE)</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 右側：迷因即時預覽區 (7 欄) -->
+    <section class="lg:col-span-7 flex flex-col">
+      <div class="y2k-window p-4 flex-grow flex flex-col">
+        <div class="y2k-title-bar px-2 py-1 mb-3 text-xs flex justify-between">
+          <span>[ PREVIEW_WINDOW ] - 即時預覽區</span>
+          <span id="canvas-size-indicator">SIZE: 600x600</span>
+        </div>
+
+        <!-- 預覽容器 (確保 html2canvas 可以精準截取) -->
+        <div class="flex-grow flex items-center justify-center bg-black/50 p-2 border-2 border-cyan-400 rounded overflow-hidden min-h-[350px] md:min-h-[480px]">
+          
+          <div 
+            id="meme-preview" 
+            class="relative overflow-hidden flex items-center justify-center bg-black select-none max-w-full"
+            style="width: 100%; max-width: 550px; aspect-ratio: 1/1;"
+          >
+            <!-- 1. 底圖 Image -->
+            <img 
+              id="meme-image" 
+              src="" 
+              alt="Meme Base" 
+              class="w-full h-full object-cover pointer-events-none"
+            />
+
+            <!-- 2. 上方文字 Overlay -->
+            <div 
+              id="top-text-display" 
+              class="absolute w-full px-4 text-center uppercase font-impact meme-text-stroke tracking-wide transition-all"
+              style="top: 5%; font-size: 36px; color: #ffffff;"
+            >
+              WHEN YOU OPEN WEBSITE IN 2000
+            </div>
+
+            <!-- 3. 下方文字 Overlay -->
+            <div 
+              id="bottom-text-display" 
+              class="absolute w-full px-4 text-center uppercase font-impact meme-text-stroke tracking-wide transition-all"
+              style="bottom: 5%; font-size: 36px; color: #ffffff;"
+            >
+              CYBERSPACE IS READY!
+            </div>
+
+            <!-- Y2K 浮水印裝飾 (僅做視覺效果) -->
+            <div class="absolute bottom-1 right-2 text-[10px] text-cyan-400 opacity-60 font-mono pointer-events-none">
+              ★ Y2K_MEME_MAKER ★
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 頁腳 Footer -->
+  <footer class="w-full max-w-6xl mx-auto mt-6 text-center text-xs text-cyan-400/80">
+    <p>© 2000-2026 CYBER MEME GENERATOR | DESIGNED WITH Y2K RETRO STYLE</p>
+  </footer>
+
+  <!-- JavaScript 邏輯控制區 -->
+  <script>
+    // ==========================================
+    // 1. DOM 元素抓取 (取得畫面上所需的 HTML 控制項)
+    // ==========================================
+    const imageUpload = document.getElementById('image-upload');
+    const memeImage = document.getElementById('meme-image');
+    
+    const topTextInput = document.getElementById('top-text-input');
+    const bottomTextInput = document.getElementById('bottom-text-input');
+    const topTextDisplay = document.getElementById('top-text-display');
+    const bottomTextDisplay = document.getElementById('bottom-text-display');
+
+    const fontSizeSlider = document.getElementById('font-size-slider');
+    const fontSizeVal = document.getElementById('font-size-val');
+
+    const topPosSlider = document.getElementById('top-pos-slider');
+    const topPosVal = document.getElementById('top-pos-val');
+
+    const bottomPosSlider = document.getElementById('bottom-pos-slider');
+    const bottomPosVal = document.getElementById('bottom-pos-val');
+
+    const textColorPicker = document.getElementById('text-color-picker');
+    const downloadBtn = document.getElementById('download-btn');
+
+    // ==========================================
+    // 2. 本地圖片上傳邏輯 (使用 FileReader 避免 CORS 跨域錯誤)
+    // ==========================================
+    imageUpload.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        // 使用 FileReader 讀取使用者選取的本機檔案
+        const reader = new FileReader();
+        
+        // 當檔案讀取完成時執行
+        reader.onload = function (event) {
+          // 將圖片的 src 設定為讀取到的 Data URL (base64)
+          memeImage.src = event.target.result;
+        };
+
+        // 以 DataURL 格式讀取檔案內容
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // ==========================================
+    // 3. 預設範例圖片 (用 SVG Inline Canvas 動態生成，完全不受外連圖片影響)
+    // ==========================================
+    function generatePresetSVG(type) {
+      let bgGrad, emoji, title;
+      if (type === 'doge') {
+        bgGrad = '<stop offset="0%" stop-color="%23ff9900"/><stop offset="100%" stop-color="%23ff5500"/>';
+        emoji = '🐕';
+        title = 'MUCH Y2K WOW';
+      } else if (type === 'cat') {
+        bgGrad = '<stop offset="0%" stop-color="%237928ca"/><stop offset="100%" stop-color="%23ff007f"/>';
+        emoji = '🐱';
+        title = 'SURPRISED CAT';
+      } else {
+        bgGrad = '<stop offset="0%" stop-color="%23001133"/><stop offset="100%" stop-color="%2300ffcc"/>';
+        emoji = '💻';
+        title = 'CYBER 2000';
+      }
+
+      // 產生 SVG 圖檔字串
+      const svgString = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              ${bgGrad}
+            </linearGradient>
+          </defs>
+          <rect width="600" height="600" fill="url(#grad)" />
+          <circle cx="300" cy="300" r="180" fill="rgba(255,255,255,0.1)" />
+          <text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" font-size="120">${emoji}</text>
+          <text x="50%" y="70%" dominant-baseline="middle" text-anchor="middle" font-size="32" fill="%23ffffff" font-family="monospace" font-weight="bold">${title}</text>
+        </svg>
+      `;
+
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
+    }
+
+    // 切換預設圖片函數
+    function loadPresetImage(type) {
+      memeImage.src = generatePresetSVG(type);
+    }
+
+    // ==========================================
+    // 4. 即時文字同步輸入控制
+    // ==========================================
+    // 上方文字輸入時同步更新
+    topTextInput.addEventListener('input', function () {
+      topTextDisplay.textContent = this.value || '';
+    });
+
+    // 下方文字輸入時同步更新
+    bottomTextInput.addEventListener('input', function () {
+      bottomTextDisplay.textContent = this.value || '';
+    });
+
+    // ==========================================
+    // 5. 參數滑桿 (Range Input) 控制邏輯
+    // ==========================================
+    
+    // 調整字體大小
+    fontSizeSlider.addEventListener('input', function () {
+      const size = this.value + 'px';
+      topTextDisplay.style.fontSize = size;
+      bottomTextDisplay.style.fontSize = size;
+      fontSizeVal.textContent = size;
+    });
+
+    // 調整上方文字垂直位置
+    topPosSlider.addEventListener('input', function () {
+      const pos = this.value + '%';
+      topTextDisplay.style.top = pos;
+      topPosVal.textContent = pos;
+    });
+
+    // 調整下方文字垂直位置
+    bottomPosSlider.addEventListener('input', function () {
+      const pos = this.value + '%';
+      bottomTextDisplay.style.bottom = pos;
+      bottomPosVal.textContent = pos;
+    });
+
+    // ==========================================
+    // 6. 文字顏色切換邏輯
+    // ==========================================
+    function changeTextColor(color) {
+      topTextDisplay.style.color = color;
+      bottomTextDisplay.style.color = color;
+      textColorPicker.value = color;
+    }
+
+    textColorPicker.addEventListener('input', function () {
+      changeTextColor(this.value);
+    });
+
+    // ==========================================
+    // 7. 一鍵下載圖檔邏輯 (使用 html2canvas 截圖)
+    // ==========================================
+    downloadBtn.addEventListener('click', function () {
+      // 取得欲截圖的 DOM 區塊 (#meme-preview)
+      const memeTarget = document.getElementById('meme-preview');
+
+      // 提示使用者正在生成
+      const originalBtnText = downloadBtn.innerHTML;
+      downloadBtn.innerHTML = '<span>⏳ 產生圖檔中...</span>';
+      downloadBtn.disabled = true;
+
+      // 使用 html2canvas 將 DOM 轉換為 HTML5 Canvas
+      html2canvas(memeTarget, {
+        scale: 2, // 提高解析度畫質 (2倍清晰度)
+        useCORS: true, // 允許跨域圖片 (防備護)
+        backgroundColor: null // 保持透明背景或預設背景
+      }).then(function (canvas) {
+        // 將 Canvas 轉換為 PNG base64 圖片 URL
+        const imageURL = canvas.toDataURL('image/png');
+
+        // 建立隱藏的 <a> 標籤觸發下載
+        const downloadLink = document.createElement('a');
+        downloadLink.href = imageURL;
+        downloadLink.download = 'my-meme.png'; // 預設下載檔名
+
+        // 觸發點擊下載
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+
+        // 恢復按鈕狀態
+        downloadBtn.innerHTML = originalBtnText;
+        downloadBtn.disabled = false;
+      }).catch(function (error) {
+        console.error('截圖下載失敗：', error);
+        alert('下載圖片時發生錯誤，請稍後再試！');
+        downloadBtn.innerHTML = originalBtnText;
+        downloadBtn.disabled = false;
+      });
+    });
+
+    // ==========================================
+    // 8. 頁面初始化 (預設載入柴犬圖片)
+    // ==========================================
+    window.onload = function () {
+      loadPresetImage('doge');
+    };
+  </script>
+
+</body>
+</html>
