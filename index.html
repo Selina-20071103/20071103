@@ -86,3 +86,354 @@
             bottom: -20px;
             right: -20px;
             opacity: 0.05;
+            font-size: 25rem;
+            color: var(--charcoal);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 已解鎖按鈕和風邊框與光暈特效 */
+        .unlocked-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            border: 2px solid #e5dfd3;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .unlocked-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.25), transparent);
+            transition: 0.6s;
+        }
+
+        .unlocked-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            border-color: var(--gold);
+            box-shadow: 0 12px 25px rgba(212, 175, 55, 0.2), 0 0 15px rgba(200, 75, 49, 0.1);
+        }
+
+        .unlocked-card:hover::before {
+            left: 100%;
+        }
+
+        /* 未解鎖按鈕風格 */
+        .locked-card {
+            background: var(--disabled-gray);
+            border: 2px dashed #c0bba8;
+            color: #8c857b;
+            opacity: 0.75;
+            cursor: not-allowed;
+            user-select: none;
+            position: relative;
+        }
+
+        /* 木紋質感頂頭條 */
+        .wood-header {
+            background: linear-gradient(135deg, #4a3b32, #2b211b);
+            border-bottom: 3px solid var(--gold);
+        }
+    </style>
+</head>
+<body class="relative flex flex-col min-h-screen justify-between items-center p-4 md:p-8">
+
+    <div class="sakura-container" id="sakura-box"></div>
+    <i class="fa-solid font-bold fa-mountain fuji-bg"></i>
+
+    <!-- 頂部和風竹簾裝飾條 -->
+    <div class="w-full max-w-5xl wood-header rounded-t-2xl p-3 text-center text-amber-100/90 text-sm tracking-widest shadow-md z-10 flex items-center justify-between px-6">
+        <span><i class="fa-solid fa-fan text-amber-400 mr-2"></i>WEB DESIGN PORTFOLIO</span>
+        <span>令和年課業闖關記錄</span>
+    </div>
+
+    <main class="w-full max-w-5xl bg-white/60 backdrop-blur-md rounded-b-2xl border border-amber-900/10 p-6 md:p-10 shadow-xl z-10 my-auto">
+        
+        <!-- 個人頭貼與名稱區域 -->
+        <section class="flex flex-col items-center text-center mb-10 relative">
+            <div class="relative mb-4 group">
+                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full p-1 bg-gradient-to-tr from-amber-600 via-red-600 to-yellow-500 shadow-lg transition-transform duration-500 group-hover:rotate-45">
+                    <img 
+                        src="https://placehold.co/150x150/f4ebd0/3a2e2b?text=%E4%BD%99%E5%AE%9C%E8%92%B3" 
+                        alt="余宜蒨的大頭貼" 
+                        class="w-full h-full object-cover rounded-full border-4 border-amber-50 shadow-inner"
+                        onerror="this.src='https://placehold.co/150x150/e2dfd8/5a7865?text=Avatar'"
+                    >
+                </div>
+                <div class="absolute -bottom-2 right-1 hanko-stamp text-xs bg-white/90">
+                    宜蒨之印
+                </div>
+            </div>
+
+            <h1 class="text-3xl md:text-4xl font-bold tracking-wider text-amber-950 mb-2 font-serif flex items-center justify-center gap-2">
+                <span>余宜蒨</span>
+            </h1>
+            <p class="text-sm md:text-base text-amber-900/70 tracking-widest max-w-md font-medium">
+                網頁程式設計作品集 ‧ 數位任務關卡入口
+            </p>
+            
+            <div class="flex items-center gap-3 mt-4 text-amber-800/40">
+                <span class="h-[1px] w-12 bg-amber-800/30"></span>
+                <i class="fa-solid fa-leaf text-xs"></i>
+                <span class="h-[1px] w-12 bg-amber-800/30"></span>
+            </div>
+        </section>
+
+        <!-- 16 個關卡按鈕網格 (響應式) -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+            
+            <!-- Week 1 - 已解鎖 -->
+            <a href="w1/index.html" class="unlocked-card rounded-xl p-5 flex flex-col justify-between h-32 group border-l-4 border-l-emerald-600">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <i class="fa-solid fa-circle-check text-[10px]"></i> Week 1
+                    </span>
+                    <i class="fa-solid fa-id-card text-emerald-600 group-hover:scale-125 transition-transform duration-300"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-slate-800 group-hover:text-amber-800 transition-colors">
+                        數位名片
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                        點擊進入關卡 <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                    </p>
+                </div>
+            </a>
+
+            <!-- Week 2 - 已解鎖 -->
+            <a href="w2/index.html" class="unlocked-card rounded-xl p-5 flex flex-col justify-between h-32 group border-l-4 border-l-rose-600">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-rose-700 bg-rose-100/80 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <i class="fa-solid fa-circle-check text-[10px]"></i> Week 2
+                    </span>
+                    <i class="fa-solid fa-utensils text-rose-600 group-hover:scale-125 transition-transform duration-300"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-slate-800 group-hover:text-amber-800 transition-colors">
+                        今天吃甚麼?
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                        點擊進入關卡 <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                    </p>
+                </div>
+            </a>
+
+            <!-- Week 3 - 已解鎖 -->
+            <a href="w3/index.html" class="unlocked-card rounded-xl p-5 flex flex-col justify-between h-32 group border-l-4 border-l-amber-600">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <i class="fa-solid fa-circle-check text-[10px]"></i> Week 3
+                    </span>
+                    <i class="fa-solid fa-face-laugh-squint text-amber-600 group-hover:scale-125 transition-transform duration-300"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-slate-800 group-hover:text-amber-800 transition-colors">
+                        迷因產生器
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                        點擊進入關卡 <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                    </p>
+                </div>
+            </a>
+
+            <!-- Week 4 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 4</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 5 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 5</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 6 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 6</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 7 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 7</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 8 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 8</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 9 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 9</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 10 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 10</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 11 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 11</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 12 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 12</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 13 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 13</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 14 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 14</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 15 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 15</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+            <!-- Week 16 -->
+            <div class="locked-card rounded-xl p-5 flex flex-col justify-between h-32">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-stone-600 bg-stone-300/80 px-2 py-0.5 rounded-full">Week 16</span>
+                    <span class="text-base">🔒</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-stone-600">尚未解鎖</h3>
+                    <p class="text-xs text-stone-500 mt-1">任務準備中...</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- 頁尾宣告 -->
+    <footer class="mt-8 text-center text-xs text-amber-900/60 z-10 tracking-wider">
+        <p>© 余宜蒨作品集入口 ‧ Web Development Course</p>
+    </footer>
+
+    <script>
+        // 生成飄落櫻花
+        function createSakura() {
+            const container = document.getElementById('sakura-box');
+            const petalCount = 15;
+
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petals = document.createElement('div');
+                petal.classList.add('petal');
+                
+                // 隨機尺寸與位置
+                const size = Math.random() * 8 + 8;
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size + 4}px`;
+                petal.style.left = `${Math.random() * 100}%`;
+                
+                // 隨機動畫延遲與時間
+                petal.style.animationDuration = `${Math.random() * 5 + 7}s`;
+                petal.style.animationDelay = `${Math.random() * 5}s`;
+
+                container.appendChild(petal);
+            }
+        }
+
+        window.onload = function() {
+            createSakura();
+        };
+    </script>
+</body>
+</html>
