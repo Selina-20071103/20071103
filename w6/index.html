@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>✨ 魔法二選一許願池 | Disney Style Poll</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: 圓潤童話感字體 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Canvas Confetti 煙火特效 -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            disney: ['"Cinzel Decorative"', '"Noto Sans TC"', 'serif'],
+            sans: ['"Noto Sans TC"', 'sans-serif'],
+          },
+          colors: {
+            magic: {
+              night: '#0B132B',
+              royal: '#1C2541',
+              castle: '#3A506B',
+              gold: '#FFD166',
+              amber: '#F4A261',
+              pink: '#FF70A6',
+              star: '#FFF3B0'
+            }
+          },
+          animation: {
+            'float': 'float 3s ease-in-out infinite',
+            'twinkle': 'twinkle 2s ease-in-out infinite',
+            'spin-slow': 'spin 12s linear infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-6px)' },
+            },
+            twinkle: {
+              '0%, 100%': { opacity: 1, transform: 'scale(1)' },
+              '50%': { opacity: 0.4, transform: 'scale(0.85)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at top, #1d3557 0%, #0b132b 65%, #050814 100%);
+      min-height: 100vh;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+
+    /* 魔法星塵背景 */
+    .magic-stars {
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, #FFF3B0, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 40px 70px, #FFD166, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2.5px 2.5px at 160px 120px, #FF70A6, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 230px 80px, #FFF3B0, rgba(0,0,0,0));
+      background-repeat: repeat;
+      background-size: 260px 260px;
+    }
+
+    /* 迪士尼金色描邊卡片 */
+    .castle-card {
+      background: linear-gradient(145deg, rgba(28, 37, 65, 0.92), rgba(11, 19, 43, 0.96));
+      border: 2px solid rgba(255, 209, 102, 0.45);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 209, 102, 0.12);
+      backdrop-filter: blur(12px);
+    }
+
+    /* 黃金魔法按鈕 */
+    .btn-magic-gold {
+      background: linear-gradient(135deg, #FFD166 0%, #F4A261 100%);
+      color: #0B132B;
+      box-shadow: 0 4px 15px rgba(255, 209, 102, 0.45);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-magic-gold:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 22px rgba(255, 209, 102, 0.75);
+    }
+    .btn-magic-gold:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    /* 皇家紫粉按鈕 */
+    .btn-magic-pink {
+      background: linear-gradient(135deg, #FF70A6 0%, #9B5DE5 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(255, 112, 166, 0.4);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-magic-pink:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 22px rgba(255, 112, 166, 0.7);
+    }
+
+    /* 1:1 拍照框 */
+    .photo-slot {
+      aspect-ratio: 1 / 1;
+      border: 2.5px dashed rgba(255, 209, 102, 0.6);
+      background: radial-gradient(circle, rgba(58, 80, 107, 0.35) 0%, rgba(11, 19, 43, 0.7) 100%);
+      transition: all 0.3s ease;
+    }
+    .photo-slot:hover {
+      border-color: #FFD166;
+      box-shadow: 0 0 20px rgba(255, 209, 102, 0.3);
+    }
+
+    /* 隱藏原生 file input */
+    input[type="file"] {
+      display: none;
+    }
+
+    /* 勝利皇冠發光 */
+    .winner-glow {
+      border: 3px solid #FFD166 !important;
+      box-shadow: 0 0 30px rgba(255, 209, 102, 0.85), inset 0 0 15px rgba(255, 209, 102, 0.4) !important;
+    }
+  </style>
+</head>
+<body class="magic-stars relative selection:bg-magic-gold selection:text-magic-night">
+
+  <!-- 頂部星空城堡標題列 -->
+  <header class="relative pt-6 pb-4 px-4 text-center max-w-xl mx-auto">
+    <!-- 右上角隱藏管理員彩蛋（魔法星星按鈕） -->
+    <button id="secretAdminBtn" title="✨ 房主魔法開票"
+      class="absolute top-5 right-4 w-9 h-9 rounded-full flex items-center justify-center text-magic-gold/40 hover:text-magic-gold hover:bg-white/10 transition-all duration-300 cursor-pointer">
+      <i class="fa-solid fa-wand-sparkles text-sm animate-twinkle"></i>
+    </button>
+
+    <!-- 迪士尼風格弧形星光裝飾 -->
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-magic-gold/15 border border-magic-gold/30 text-magic-gold text-xs font-bold tracking-widest mb-2">
+      <i class="fa-solid fa-crown"></i> MAGIC CHOICE CASTLE
+    </div>
+
+    <h1 class="font-disney text-2xl sm:text-3xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-magic-star via-magic-gold to-magic-amber drop-shadow-[0_2px_10px_rgba(255,209,102,0.4)]">
+      ✨ 魔法二選一許願池 ✨
+    </h1>
+    <p class="text-xs sm:text-sm text-blue-200/80 mt-1">
+      拍下兩個心願，讓夥伴施展投票魔法吧！
+    </p>
+  </header>
+
+  <!-- 主容器 -->
+  <main class="max-w-xl mx-auto px-4 pb-16">
+
+    <!-- ==================== 載入中遮罩 ==================== -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 z-50 bg-magic-night/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
+      <div class="relative w-20 h-20 mb-4 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full border-4 border-t-magic-gold border-r-magic-pink border-b-transparent border-l-transparent animate-spin"></div>
+        <i class="fa-solid fa-hat-wizard text-3xl text-magic-gold animate-float"></i>
+      </div>
+      <p id="loadingText" class="text-lg font-bold text-magic-gold tracking-wider">正在施展雲端儲存魔法...</p>
+      <p class="text-xs text-blue-200/70 mt-1">神仙教母正在把照片送往城堡圖庫 ✨</p>
+    </div>
+
+    <!-- ==================== 視圖 1：建立投票 (Create View) ==================== -->
+    <section id="createView" class="castle-card rounded-3xl p-5 sm:p-7 space-y-6">
+      <div class="flex items-center justify-between border-b border-magic-gold/20 pb-3">
+        <h2 class="text-lg font-bold text-magic-gold flex items-center gap-2">
+          <i class="fa-solid fa-sparkles"></i> 發起新的二選一對決
+        </h2>
+        <span id="demoBadge" class="hidden text-[11px] px-2 py-0.5 rounded-full bg-pink-500/20 border border-pink-400/40 text-pink-200">
+          CodePen 預覽模式
+        </span>
+      </div>
+
+      <!-- 投票題目 -->
+      <div>
+        <label class="block text-sm font-bold text-magic-star mb-1.5">
+          <i class="fa-solid fa-scroll text-magic-gold mr-1"></i> 許願題目（今天要決定什麼？）
+        </label>
+        <input id="pollTitle" type="text" maxlength="40"
+          placeholder="例如：今晚城堡晚宴吃哪家？ / 舞會選哪套禮服？"
+          class="w-full px-4 py-3 rounded-2xl bg-magic-night/80 border border-magic-gold/40 text-white placeholder-blue-300/40 focus:outline-none focus:border-magic-gold focus:ring-2 focus:ring-magic-gold/30 transition" />
+      </div>
+
+      <!-- 雙格 1:1 拍照區 -->
+      <div>
+        <label class="block text-sm font-bold text-magic-star mb-2">
+          <i class="fa-solid fa-camera-retro text-magic-gold mr-1"></i> 點擊拍攝或上傳 A / B 照片（自動裁切 1:1）
+        </label>
+        <div class="grid grid-cols-2 gap-3.5">
+          <!-- 選項 A -->
+          <div class="space-y-2">
+            <label for="fileInputA" class="photo-slot relative rounded-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer group">
+              <img id="previewA" class="hidden w-full h-full object-cover" alt="選項 A 預覽" />
+              <div id="placeholderA" class="text-center p-3">
+                <div class="w-12 h-12 mx-auto rounded-full bg-magic-gold/20 text-magic-gold flex items-center justify-center mb-2 group-hover:scale-110 transition">
+                  <i class="fa-solid fa-camera text-xl"></i>
+                </div>
+                <span class="block text-sm font-bold text-magic-gold">選項 A 拍照</span>
+                <span class="block text-[11px] text-blue-200/70 mt-0.5">點擊開啟相機</span>
+              </div>
+              <span class="absolute top-2 left-2 w-7 h-7 rounded-full bg-magic-gold text-magic-night font-black text-sm flex items-center justify-center shadow">A</span>
+            </label>
+            <input id="fileInputA" type="file" accept="image/*" capture="environment" />
+            <input id="labelA" type="text" maxlength="15" placeholder="選項 A 名稱 (選填)"
+              class="w-full px-3 py-1.5 text-xs rounded-xl bg-magic-night/70 border border-magic-gold/30 text-center text-white placeholder-blue-300/40 focus:outline-none focus:border-magic-gold" />
+          </div>
+
+          <!-- 選項 B -->
+          <div class="space-y-2">
+            <label for="fileInputB" class="photo-slot relative rounded-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer group">
+              <img id="previewB" class="hidden w-full h-
